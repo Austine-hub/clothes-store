@@ -2,8 +2,9 @@
 
 /* Main footer styles */
 .footer {
-  background-color: rgb(17, 24, 39); /* bg-gray-900 */
-  color: rgb(209, 213, 219); /* text-gray-300 */
+ background: linear-gradient(135deg, #040e01 0%, #121311 50%, #001103 100%);
+  min-height: 100vh;
+  color: rgb(173, 158, 158); /* text-gray-300 */
 }
 
 /* Footer main content container */

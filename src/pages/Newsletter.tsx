@@ -1,6 +1,6 @@
 // src/pages/Newsletter.tsx
-import React, { useState } from "react";
-import type { FormEvent, ChangeEvent } from "react"; // ✅ type-only import (fixes TS1484 error)
+import { useState, useCallback, useMemo } from "react";
+import type { FormEvent, ChangeEvent } from "react";
 import styles from "./Newsletter.module.css";
 
 interface FormData {
@@ -13,53 +13,47 @@ interface FormErrors {
   email?: string;
 }
 
-const Newsletter: React.FC = () => {
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    email: "",
-  });
-
+export default function Newsletter() {
+  const [formData, setFormData] = useState<FormData>({ firstName: "", email: "" });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // ✅ Extract regex to avoid re-creating it every validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // ✅ Memoized regex to avoid recreation
+  const emailRegex = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/, []);
 
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const newErrors: FormErrors = {};
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = "This field is required";
+      newErrors.firstName = "First name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = "This field is required";
+      newErrors.email = "Email is required";
     } else if (!emailRegex.test(formData.email)) {
       newErrors.email = "Please enter a valid email";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData, emailRegex]);
 
   const handleInputChange =
     (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: e.target.value,
-      }));
+      const { value } = e.target;
 
-      // Clear error dynamically when user corrects input
+      setFormData((prev) => ({ ...prev, [field]: value }));
+
+      // Clear error dynamically
       if (errors[field]) {
-        setErrors((prev) => ({
-          ...prev,
-          [field]: undefined,
-        }));
+        setErrors((prev) => ({ ...prev, [field]: undefined }));
       }
     };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSuccessMessage(null);
 
     if (!validateForm()) return;
 
@@ -71,37 +65,41 @@ const Newsletter: React.FC = () => {
 
       console.log("✅ Newsletter subscription successful:", formData);
 
-      // Reset form after success
+      // Reset form & show success message
       setFormData({ firstName: "", email: "" });
       setErrors({});
+      setSuccessMessage("Thanks for subscribing! 🎉");
     } catch (error) {
       console.error("❌ Subscription failed:", error);
+      setErrors({ email: "Subscription failed. Try again later." });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <section className={styles.container}>
+    <section className={styles.container} aria-labelledby="newsletter-heading">
       <div className={styles.content}>
-        <h2 className={styles.title}>Don't Miss Out</h2>
+        <h2 id="newsletter-heading" className={styles.title}>
+          Don&apos;t Miss Out
+        </h2>
         <p className={styles.subtitle}>
-          Don&apos;t miss out on the latest product launches and updates. Sign
-          up to our newsletter.
+          Sign up to our newsletter for product launches and updates.
         </p>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
           {/* First name input */}
           <div className={styles.inputGroup}>
+            <label htmlFor="firstName" className={styles.visuallyHidden}>
+              First name
+            </label>
             <input
+              id="firstName"
               type="text"
               placeholder="First name"
               value={formData.firstName}
               onChange={handleInputChange("firstName")}
-              className={`${styles.input} ${
-                errors.firstName ? styles.inputError : ""
-              }`}
-              aria-label="First name"
+              className={`${styles.input} ${errors.firstName ? styles.inputError : ""}`}
               aria-invalid={!!errors.firstName}
               disabled={isLoading}
             />
@@ -114,15 +112,16 @@ const Newsletter: React.FC = () => {
 
           {/* Email input */}
           <div className={styles.inputGroup}>
+            <label htmlFor="email" className={styles.visuallyHidden}>
+              Email address
+            </label>
             <input
+              id="email"
               type="email"
               placeholder="Email"
               value={formData.email}
               onChange={handleInputChange("email")}
-              className={`${styles.input} ${
-                errors.email ? styles.inputError : ""
-              }`}
-              aria-label="Email address"
+              className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
               aria-invalid={!!errors.email}
               disabled={isLoading}
             />
@@ -138,11 +137,17 @@ const Newsletter: React.FC = () => {
             type="submit"
             className={styles.submitButton}
             disabled={isLoading}
-            aria-label="Subscribe to newsletter"
           >
             {isLoading ? "Subscribing..." : "Subscribe"}
           </button>
         </form>
+
+        {/* Success feedback */}
+        {successMessage && (
+          <p className={styles.successText} role="status">
+            {successMessage}
+          </p>
+        )}
 
         <footer className={styles.footer}>
           <a href="/privacy-policy" className={styles.privacyLink}>
@@ -152,6 +157,5 @@ const Newsletter: React.FC = () => {
       </div>
     </section>
   );
-};
+}
 
-export default Newsletter;

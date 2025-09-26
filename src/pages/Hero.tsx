@@ -1,5 +1,5 @@
 // src/components/Hero.tsx
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./Hero.module.css";
 
 interface HeroProps {
@@ -10,6 +10,8 @@ interface HeroProps {
   onPrimaryClick?: () => void;
   onSecondaryClick?: () => void;
   className?: string;
+  autoPlay?: boolean;
+  interval?: number; // autoplay interval
 }
 
 const Hero: React.FC<HeroProps> = ({
@@ -20,21 +22,25 @@ const Hero: React.FC<HeroProps> = ({
   onPrimaryClick,
   onSecondaryClick,
   className,
+  autoPlay = true,
+  interval = 8000,
 }) => {
-  // Placeholder hero images (put them in /public/hero-images/)
-        const heroImages: string[] = [
-        "/hero-images/hero3.png",
-        "/hero-images/hero1.png",
-        "/hero-images/hero5.png",
-        "/hero-images/hero4.png",
-        "/hero-images/hero2.png",
-        "/hero-images/hero6.png",
-        ];
-
+  // Centralized image array with alt text for accessibility
+  const heroImages = useMemo(
+    () => [
+      { src: "/hero-images/hero3.png", alt: "Model wearing bird-themed T-shirt" },
+      { src: "/hero-images/hero1.png", alt: "Organic cotton hoodie for bird lovers" },
+      { src: "/hero-images/hero5.png", alt: "Bird print jumper displayed on a hanger" },
+      { src: "/hero-images/hero4.png", alt: "Nature-inspired T-shirt outdoors" },
+      { src: "/hero-images/hero2.png", alt: "Couple in bird design apparel" },
+      { src: "/hero-images/hero6.png", alt: "Bird lover’s clothing flat lay" },
+    ],
+    []
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
-  // Go to next/prev image
   const nextSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % heroImages.length);
   }, [heroImages.length]);
@@ -45,46 +51,63 @@ const Hero: React.FC<HeroProps> = ({
     );
   }, [heroImages.length]);
 
-  // Auto-advance every 8 seconds
+  // Auto-advance with pause on hover/focus
   useEffect(() => {
-    const interval = setInterval(nextSlide, 8000);
-    return () => clearInterval(interval);
-  }, [nextSlide]);
+    if (!autoPlay || paused) return;
+    const intervalId = setInterval(nextSlide, interval);
+    return () => clearInterval(intervalId);
+  }, [autoPlay, paused, interval, nextSlide]);
 
   return (
     <section
       className={`${styles.hero} ${className || ""}`}
-      style={{ backgroundImage: `url(${heroImages[currentIndex]})` }}
-      role="banner"
+      role="region"
+      aria-label="Hero product showcase"
     >
-      <div className={styles.heroContainer}>
+      <div
+        className={styles.heroContainer}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+      >
+        {/* Hero image with lazy loading */}
+        <div className={styles.imageWrapper}>
+          <img
+            src={heroImages[currentIndex].src}
+            alt={heroImages[currentIndex].alt}
+            className={styles.heroImage}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        {/* Overlay text content */}
         <div className={styles.heroContent}>
-          <div className={styles.textContent}>
-            <h1 className={styles.heroTitle}>{title}</h1>
-            <p className={styles.heroSubtitle}>{subtitle}</p>
-            <div className={styles.buttonGroup}>
-              <button
-                type="button"
-                className={`${styles.heroButton} ${styles.primaryButton}`}
-                onClick={onPrimaryClick}
-                aria-label={`Shop ${primaryButtonText} clothing`}
-              >
-                {primaryButtonText}
-              </button>
-              <button
-                type="button"
-                className={`${styles.heroButton} ${styles.secondaryButton}`}
-                onClick={onSecondaryClick}
-                aria-label={`Shop ${secondaryButtonText} clothing`}
-              >
-                {secondaryButtonText}
-              </button>
-            </div>
+          <h1 className={styles.heroTitle}>{title}</h1>
+          <p className={styles.heroSubtitle}>{subtitle}</p>
+          <div className={styles.buttonGroup}>
+            <button
+              type="button"
+              className={`${styles.heroButton} ${styles.primaryButton}`}
+              onClick={onPrimaryClick}
+              aria-label={`Shop ${primaryButtonText} clothing`}
+            >
+              {primaryButtonText}
+            </button>
+            <button
+              type="button"
+              className={`${styles.heroButton} ${styles.secondaryButton}`}
+              onClick={onSecondaryClick}
+              aria-label={`Shop ${secondaryButtonText} clothing`}
+            >
+              {secondaryButtonText}
+            </button>
           </div>
         </div>
 
         {/* Carousel indicators */}
-        <div
+        <nav
           className={styles.carouselIndicators}
           role="tablist"
           aria-label="Carousel navigation"
@@ -97,12 +120,12 @@ const Hero: React.FC<HeroProps> = ({
                 index === currentIndex ? styles.active : ""
               }`}
               aria-selected={index === currentIndex}
-              aria-label={`Slide ${index + 1}`}
+              aria-label={`Go to slide ${index + 1}`}
               role="tab"
               onClick={() => setCurrentIndex(index)}
             ></button>
           ))}
-        </div>
+        </nav>
 
         {/* Navigation arrows */}
         <button
@@ -111,21 +134,7 @@ const Hero: React.FC<HeroProps> = ({
           aria-label="Previous slide"
           onClick={prevSlide}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M15 18L9 12L15 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          ‹
         </button>
         <button
           type="button"
@@ -133,21 +142,7 @@ const Hero: React.FC<HeroProps> = ({
           aria-label="Next slide"
           onClick={nextSlide}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9 18L15 12L9 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          ›
         </button>
       </div>
     </section>

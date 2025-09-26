@@ -2,79 +2,83 @@
 .hero {
   position: relative;
   width: 100%;
-  height: 600px;
-  background-color: #2c3e50;
-  background-image: url('/hero-background.jpg');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  height: 100vh; /* Full screen hero */
+  min-height: 500px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: transparent;
+  color: #925555;
+}
+
+.imageWrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
   overflow: hidden;
 }
 
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  animation: fadeIn 1.2s ease forwards;
+}
+
+/* Overlay gradient */
 .hero::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.1) 50%,
-    rgba(0, 0, 0, 0.2) 100%
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.35) 100%
   );
   z-index: 1;
 }
 
+/* Content */
 .heroContainer {
   position: relative;
-  width: 100%;
+  z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  z-index: 850;
   height: 100%;
   display: flex;
   align-items: center;
 }
 
 .heroContent {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.textContent {
-  max-width: 600px;
-  padding: 40px 0;
+  max-width: 650px;
 }
 
 .heroTitle {
-  font-family: 'Arial', 'Helvetica', sans-serif;
-  font-size: 4rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 800;
   margin: 0 0 20px 0;
   line-height: 1.1;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  letter-spacing: -0.02em;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .heroSubtitle {
-  font-family: 'Arial', 'Helvetica', sans-serif;
-  font-size: 1.25rem;
+  font-family: "Inter", "Arial", sans-serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
   font-weight: 400;
-  color: #ffffff;
   margin: 0 0 40px 0;
-  line-height: 1.5;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  max-width: 500px;
+  line-height: 1.6;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  max-width: 520px;
 }
 
+/* Buttons */
 .buttonGroup {
   display: flex;
   gap: 16px;
@@ -82,24 +86,22 @@
 }
 
 .heroButton {
-  padding: 16px 32px;
-  font-family: 'Arial', 'Helvetica', sans-serif;
+  padding: 14px 28px;
+  font-family: "Inter", "Arial", sans-serif;
   font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  min-width: 120px;
   position: relative;
-  overflow: hidden;
 }
 
 .heroButton:focus {
   outline: 2px solid #ffffff;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 .heroButton:active {
@@ -109,31 +111,29 @@
 .primaryButton {
   background-color: #1e90ff;
   color: #ffffff;
-  box-shadow: 0 4px 8px rgba(30, 144, 255, 0.3);
+  box-shadow: 0 6px 12px rgba(30, 144, 255, 0.4);
 }
 
 .primaryButton:hover {
   background-color: #1c7ed6;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(30, 144, 255, 0.4);
 }
 
 .secondaryButton {
   background-color: #17a2b8;
   color: #ffffff;
-  box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+  box-shadow: 0 6px 12px rgba(23, 162, 184, 0.4);
 }
 
 .secondaryButton:hover {
   background-color: #138496;
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(23, 162, 184, 0.4);
 }
 
 /* Carousel Indicators */
 .carouselIndicators {
   position: absolute;
-  bottom: 30px;
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -145,26 +145,20 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 0;
 }
 
 .indicator:hover {
-  border-color: rgba(255, 255, 255, 0.8);
-  transform: scale(1.1);
-}
-
-.indicator:focus {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
+  transform: scale(1.2);
+  border-color: #fff;
 }
 
 .indicator.active {
-  background-color: #ffffff;
-  border-color: #ffffff;
+  background-color: #fff;
+  border-color: #fff;
 }
 
 /* Navigation Arrows */
@@ -172,102 +166,66 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #ffffff;
+  color: #fff;
   z-index: 3;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
 
 .navArrow:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.25);
   transform: translateY(-50%) scale(1.05);
 }
 
-.navArrow:focus {
-  outline: 2px solid #ffffff;
-  outline-offset: 2px;
-}
-
-.navArrow:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
 .prevArrow {
-  left: 30px;
+  left: 24px;
 }
 
 .nextArrow {
-  right: 30px;
+  right: 24px;
 }
 
-/* Responsive Design */
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .hero {
-    height: 500px;
-  }
-
-  .heroContainer {
-    padding: 0 16px;
+    height: 80vh;
   }
 
   .heroTitle {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
-  }
-
-  .heroSubtitle {
-    font-size: 1.1rem;
-    margin-bottom: 30px;
-  }
-
-  .buttonGroup {
-    gap: 12px;
-  }
-
-  .heroButton {
-    padding: 14px 24px;
-    font-size: 0.9rem;
-    min-width: 100px;
-  }
-
-  .navArrow {
-    width: 40px;
-    height: 40px;
-    display: none; /* Hide arrows on mobile for better UX */
-  }
-
-  .prevArrow {
-    left: 16px;
-  }
-
-  .nextArrow {
-    right: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero {
-    height: 450px;
-  }
-
-  .heroTitle {
-    font-size: 2rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
   }
 
   .heroSubtitle {
     font-size: 1rem;
   }
 
+  .navArrow {
+    display: none; /* Hide arrows on mobile */
+  }
+}
+
+@media (max-width: 480px) {
   .buttonGroup {
     flex-direction: column;
     align-items: flex-start;
@@ -275,58 +233,30 @@
 
   .heroButton {
     width: 100%;
-    max-width: 200px;
+    max-width: 220px;
   }
 
   .carouselIndicators {
-    bottom: 20px;
+    bottom: 18px;
   }
 }
 
-@media (max-width: 320px) {
-  .heroContainer {
-    padding: 0 12px;
-  }
-
-  .heroTitle {
-    font-size: 1.75rem;
-  }
-
-  .heroSubtitle {
-    font-size: 0.9rem;
-  }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .hero {
-    background-image: url('/hero-background@2x.jpg');
-  }
-}
-
-/* Reduced motion accessibility */
+/* Accessibility & Motion */
 @media (prefers-reduced-motion: reduce) {
-  .heroButton,
-  .indicator,
-  .navArrow,
-  .hero::before {
-    transition: none;
-  }
-  
-  .heroButton:hover,
-  .navArrow:hover {
-    transform: none;
+  * {
+    transition: none !important;
+    animation: none !important;
   }
 }
 
-/* Dark mode support */
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   .hero::before {
     background: linear-gradient(
       135deg,
-      rgba(0, 0, 0, 0.4) 0%,
-      rgba(0, 0, 0, 0.2) 50%,
-      rgba(0, 0, 0, 0.3) 100%
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.25) 50%,
+      rgba(0, 0, 0, 0.45) 100%
     );
   }
 }

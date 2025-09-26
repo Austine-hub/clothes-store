@@ -3,11 +3,11 @@ import type { FC } from "react";
 import styles from "./Footer.module.css";
 
 const Footer: FC = () => {
-  // Explicitly type footerSections as an array of [string, string[]] tuples
+  // Modernized footer sections for a clothes/fashion store
   const footerSections: [string, string[]][] = [
-    ["Shop", ["Vitamins", "Skincare", "Medicines", "Baby & Child"]],
-    ["Services", ["Prescriptions", "Travel health", "Health checks", "Online doctor"]],
-    ["Company", ["About us", "Careers", "Sustainability", "Contact"]],
+    ["Shop", ["Men", "Women", "Kids", "New Arrivals", "Sale"]],
+    ["Customer Service", ["Shipping & Delivery", "Returns & Exchanges", "Size Guide", "FAQs", "Track Order"]],
+    ["Company", ["About Us", "Careers", "Sustainability", "Contact"]],
   ];
 
   return (
@@ -17,14 +17,21 @@ const Footer: FC = () => {
         <div className={styles.brandSection}>
           <div className={styles.brandLogoWrapper}>
             <span className={styles.brandIcon}>
-              <svg viewBox="0 0 24 24" className={styles.brandSvg}>
-                <path d="M12 2v20M2 12h20" />
+              <svg
+                viewBox="0 0 24 24"
+                className={styles.brandSvg}
+                aria-hidden="true"
+              >
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
               </svg>
             </span>
-            <span className={styles.brandText}>AjanjaCare</span>
+            <span className={styles.brandText}>AjanjaClothes</span>
           </div>
+          <p className={styles.tagline}>
+            Style for Every Story — Trendy, Sustainable, Affordable
+          </p>
           <p className={styles.copyright}>
-            © {new Date().getFullYear()} CarePlus Pharmacy Ltd. All rights reserved.
+            © {new Date().getFullYear()} AjanjaClothes Ltd. All rights reserved.
           </p>
         </div>
 
@@ -33,28 +40,52 @@ const Footer: FC = () => {
           <div key={i} className={styles.footerColumn}>
             <h4 className={styles.columnHeading}>{heading}</h4>
             <ul className={styles.columnList}>
-              {links.map((l: string, j: number) => (
+              {links.map((link, j) => (
                 <li key={j} className={styles.columnListItem}>
                   <a className={styles.columnLink} href="#">
-                    {l}
+                    {link}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
         ))}
+
+        {/* Newsletter Subscription */}
+        <div className={styles.newsletterSection}>
+          <h4 className={styles.columnHeading}>Stay in the Loop</h4>
+          <p className={styles.newsletterText}>
+            Subscribe for updates on new arrivals, exclusive deals, and fashion tips.
+          </p>
+          <form className={styles.newsletterForm}>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className={styles.newsletterInput}
+            />
+            <button type="submit" className={styles.newsletterButton}>
+              Subscribe
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Bottom Legal Section */}
       <div className={styles.footerBottom}>
         <div className={styles.footerBottomContainer}>
           <p className={styles.legalText}>
-            Registered pharmacy in Kenya • License No. 123456 • For advice, speak to our pharmacists.
+            Registered AjanjaClothes in Kenya • License No. 123456 • Customer Care Available 24/7.
           </p>
           <div className={styles.legalLinks}>
-            <a href="#" className={styles.legalLink}>Privacy</a>
-            <a href="#" className={styles.legalLink}>Terms</a>
-            <a href="#" className={styles.legalLink}>Cookies</a>
+            <a href="#" className={styles.legalLink}>
+              Privacy Policy
+            </a>
+            <a href="#" className={styles.legalLink}>
+              Terms of Service
+            </a>
+            <a href="#" className={styles.legalLink}>
+              Cookies
+            </a>
           </div>
         </div>
       </div>
@@ -63,3 +94,4 @@ const Footer: FC = () => {
 };
 
 export default Footer;
+
