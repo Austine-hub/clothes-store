@@ -100,7 +100,7 @@ const Favourites = () => {
       <div className={styles.content}>
         <header className={styles.header}>
           <h1 id="favourites-title" className={styles.title}>
-            Seasonal Favorites
+            Current Market Favorites
           </h1>
         </header>
 

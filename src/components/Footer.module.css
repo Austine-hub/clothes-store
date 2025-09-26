@@ -80,13 +80,17 @@
   color: white; /* text-white */
 }
 
+/* Remove bullets from all footer lists */
 .columnList {
   margin-top: 0.75rem; /* mt-3 */
   display: flex;
   flex-direction: column;
   gap: 0.5rem; /* space-y-2 */
   font-size: 0.875rem; /* text-sm */
+  list-style: none; /* ✅ removes bullets */
+  padding-left: 0;  /* ✅ removes extra left indentation */
 }
+
 
 .columnListItem {
   /* List item wrapper - no additional styles needed */
@@ -137,4 +141,8 @@
 
 .legalLink:hover {
   color: white; /* hover:text-white */
+}
+
+.footer{
+  list-style: none;
 }

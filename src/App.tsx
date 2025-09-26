@@ -12,9 +12,9 @@ function App() {
     <>
       <Header/>
       <Hero/>
+      <Products/>
       <Favourites/>
       <Product2/>
-      <Products/>
       <Newsletter/>
       <Footer/>
     </>
